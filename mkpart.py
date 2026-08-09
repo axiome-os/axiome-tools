@@ -5,7 +5,7 @@ Usage: mkpart.py <disk.img>
 
 The image must already exist (e.g. created with `dd`). Two partitions are
 written:
-  * Partition 1: FAT32 "BOOT" (type 0xEF), LBA 2048, 130024 sectors (~63.5MB)
+  * Partition 1: FAT32 "BOOT" (type 0xEF), LBA 2048, 129024 sectors (~63MB)
   * Partition 2: axiomefs "ROOT" (type 0x83), LBA 131072, 393216 sectors (192MB)
 
 Partition 1 is type 0xEF (EFI System Partition) so UEFI firmware
@@ -24,7 +24,7 @@ def write_mbr(img_path):
         img[510] = 0x55
         img[511] = 0xAA
 
-        # Partition 1: EFI System Partition, LBA 2048, 130024 sectors (63.5MB).
+        # Partition 1: EFI System Partition, LBA 2048, 129024 sectors (63MB).
         off = 446
         struct.pack_into('<BBBBBBBB', img, off,
             0x80,            # status (bootable)
@@ -32,7 +32,7 @@ def write_mbr(img_path):
             0xEF,            # type: EFI System Partition
             0xFF, 0xFF, 0xFF,  # CHS of last sector
         )
-        struct.pack_into('<II', img, off + 8, 2048, 130024)
+        struct.pack_into('<II', img, off + 8, 2048, 129024)
 
         # Partition 2: axiomefs, LBA 131072, 393216 sectors (192MB).
         off = 462
